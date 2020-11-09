@@ -6,49 +6,62 @@ public class Core {
     Random random = new Random();
     private Queue<Process> processesQ = new LinkedList<>();
 
-    public void planning() {
-        Process process = processesQ.poll();
-        while (process != null) {
-            if (!startProcess(process)) {
-                processesQ.add(process);
-            }
-            process = processesQ.poll();
-        }
-    }
-
     public void createProcesses() {
-        int quantity = random.nextInt(10) + 1;
-        for (int i = 1; i <= quantity; i++) {
+        int processQuantity = random.nextInt(10) + 1;
+
+        for (int i = 1; i <= processQuantity; i++) {
             Process process = new Process(i);
             processesQ.add(process);
+            int streamQuantity = random.nextInt(10) + 1;
+            Stream stream;
+            Queue<Stream> streamsQ = new LinkedList<>();
+            for (int j = 1; j <= streamQuantity; j++) {
+                stream = new Stream(j);
+                streamsQ.add(stream);
+            }
+            process.setStreamsQ(streamsQ);
         }
     }
 
-    public boolean startProcess(Process process) {
-        Queue<Stream> StreamsQ = process.getStreamsQ();
-        Stream stream = StreamsQ.poll();
-
+    private boolean startProcess(Process process) {
+        Queue<Stream> streamsQ = process.getStreamsQ();
+        Stream stream = streamsQ.poll();
         int totalTime = 0;
 
-        System.out.print("Процесс " + process.getProcessID() + " начинает работать." + '\n');
+        System.out.print("Процесс " + process.getProcessID() + " начинает работать" + '\n');
 
-        while (totalTime + stream.getWorkTime() <= process.getMaxTime() && stream != null) {
-            totalTime += stream.getWorkTime();
-            if (!stream.startStream()) {
-                StreamsQ.add(stream);
-            }
-            stream = StreamsQ.poll();
-            if (stream == null) {
+        while (stream != null) {
+            if (totalTime < process.getMaxTime()) {
+                if (stream.getTime() > process.getMaxTime() - totalTime) {
+                    stream.changeTime(process.getMaxTime() - totalTime);
+                }
+                totalTime += stream.getWorkTime();
+                if (stream.startStream() == false) {
+                    streamsQ.add(stream);
+                }
+                stream.returnDefaultTime();
+                stream = streamsQ.poll();
+            } else {
                 break;
             }
         }
         if (stream != null) {
-            StreamsQ.add(stream);
-            System.out.print("Процесс " + process.getProcessID() + " приостановлен через " + totalTime + " мс" + '\n' + '\n');
+            streamsQ.add(stream);
+            System.out.print("Время процесса " + process.getProcessID() + " вышло, можно было задействовать " + totalTime + " такт(ов)\n\n");
             return false;
         } else {
-            System.out.print("Процесс " + process.getProcessID() + " выполнен за " + totalTime + " мс" + '\n' + '\n');
+            System.out.print("Процесс " + process.getProcessID() + " выполнен за " + totalTime + " такт(ов)\n\n");
             return true;
+        }
+    }
+
+    public void planning() {
+        Process process = processesQ.poll();
+        while (process != null) {
+            if (startProcess(process) == false) {
+                processesQ.add(process);
+            }
+            process = processesQ.poll();
         }
     }
 }

@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class Stream {
-    private Random random= new Random();
+    private Random random = new Random();
 
     private int streamID;
     private int time = 2;
@@ -12,14 +12,26 @@ public class Stream {
     }
 
     public boolean startStream() {
-        System.out.print("Поток " + streamID + " начинает выполнение." + '\n');
+        System.out.print("Поток " + streamID + " начинает выполнение\n");
         if (workTime > time) {
-            System.out.print("Поток " + streamID + " приостановлен через " + time + " мс" + '\n');
+            System.out.print("Время потока  " + streamID + " вышло, можно было задействовать " + time + " такт(ов)\n");
             workTime = workTime - time;
             return false;
         }
-        System.out.print("Поток " + streamID + " выполнен за " + workTime + " мс" + '\n');
+        System.out.print("Поток " + streamID + " выполнен за " + workTime + " такт(ов)\n");
         return true;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void changeTime(int time) {
+        this.time = time;
+    }
+
+    public void returnDefaultTime() {
+        this.time = 2;
     }
 
     public int getWorkTime() {
