@@ -5,21 +5,18 @@ public class Stream {
 
     private int streamID;
     private int time = 2;
-    private int workTime = random.nextInt(10) + 1;
+    private int workTime = random.nextInt(3) + 1;
 
     public Stream(int streamID) {
         this.streamID = streamID;
     }
 
-    public boolean startStream() {
-        System.out.print("Поток " + streamID + " начинает выполнение\n");
+    public String startStream() {
         if (workTime > time) {
-            System.out.print("Время потока  " + streamID + " вышло, можно было задействовать " + time + " такт(ов)\n");
             workTime = workTime - time;
-            return false;
+            return ("Время потока  " + streamID + " вышло, прошло " + time + " такт(ов)\n");
         }
-        System.out.print("Поток " + streamID + " выполнен за " + workTime + " такт(ов)\n");
-        return true;
+        return ("Поток " + streamID + " выполнен за " + workTime + " такт(ов)\n");
     }
 
     public int getTime() {
@@ -32,6 +29,10 @@ public class Stream {
 
     public void returnDefaultTime() {
         this.time = 2;
+    }
+
+    public int getStreamID() {
+        return streamID;
     }
 
     public int getWorkTime() {

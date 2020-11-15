@@ -23,20 +23,20 @@ public class Core {
         }
     }
 
-    private boolean startProcess(Process process) {
+    private String startProcess(Process process) {
         Queue<Stream> streamsQ = process.getStreamsQ();
         Stream stream = streamsQ.poll();
         int totalTime = 0;
-
-        System.out.print("Процесс " + process.getProcessID() + " начинает работать" + '\n');
-
         while (stream != null) {
             if (totalTime < process.getMaxTime()) {
                 if (stream.getTime() > process.getMaxTime() - totalTime) {
                     stream.changeTime(process.getMaxTime() - totalTime);
                 }
                 totalTime += stream.getWorkTime();
-                if (stream.startStream() == false) {
+                System.out.print("Поток " + stream.getStreamID() + " начинает выполнение\n");
+                String result = stream.startStream();
+                System.out.print(result);
+                if (result.contains("вышло")) {
                     streamsQ.add(stream);
                 }
                 stream.returnDefaultTime();
@@ -47,18 +47,19 @@ public class Core {
         }
         if (stream != null) {
             streamsQ.add(stream);
-            System.out.print("Время процесса " + process.getProcessID() + " вышло, можно было задействовать " + totalTime + " такт(ов)\n\n");
-            return false;
+            return ("Время процесса " + process.getProcessID() + " вышло, прошло " + totalTime + " такт(ов)\n\n");
         } else {
-            System.out.print("Процесс " + process.getProcessID() + " выполнен за " + totalTime + " такт(ов)\n\n");
-            return true;
+            return ("Процесс " + process.getProcessID() + " выполнен за " + totalTime + " такт(ов)\n\n");
         }
     }
 
     public void planning() {
         Process process = processesQ.poll();
         while (process != null) {
-            if (startProcess(process) == false) {
+            System.out.print("Процесс " + process.getProcessID() + " начинает работать" + '\n');
+            String result = startProcess(process);
+            System.out.print(result);
+            if (result.contains("вышло")) {
                 processesQ.add(process);
             }
             process = processesQ.poll();
