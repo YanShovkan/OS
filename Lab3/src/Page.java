@@ -4,7 +4,6 @@ public class Page {
     private int processID;
     private String data;
     private int faultFrequency;
-    private byte memory = 4;
 
     public Page(int processID, int ID, String data, int faultFrequency) {
         this.processID = processID;
@@ -23,10 +22,6 @@ public class Page {
 
     public int getProcessID() {
         return processID;
-    }
-
-    public int getMemory() {
-        return memory;
     }
 
     public int getFaultFrequency() {
