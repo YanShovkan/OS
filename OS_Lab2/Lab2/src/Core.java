@@ -1,17 +1,19 @@
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
 public class Core {
     Random random = new Random();
-    private Queue<Process> processesQ = new LinkedList<>();
+
+    private HashMap<Integer, Process> prosessesMap;
 
     public void createProcesses() {
         int processQuantity = random.nextInt(10) + 1;
+        prosessesMap = new HashMap<Integer, Process>();
 
         for (int i = 1; i <= processQuantity; i++) {
             Process process = new Process(i);
-            processesQ.add(process);
             int streamQuantity = random.nextInt(10) + 1;
             Stream stream;
             Queue<Stream> streamsQ = new LinkedList<>();
@@ -20,6 +22,36 @@ public class Core {
                 streamsQ.add(stream);
             }
             process.setStreamsQ(streamsQ);
+            prosessesMap.put(i, process);
+        }
+    }
+
+    public void printAllProcesses() {
+        for (int i = 1; i <= prosessesMap.size(); i++) {
+            Process process = prosessesMap.get(i);
+            System.out.println("Процесс " + i + " затрачивает " + process.getTotalTime() + " такт(ов)");
+            prosessesMap.put(i, process);
+        }
+        System.out.print("\n");
+    }
+
+    public void planning() {
+        Queue<Process> processesQ = new LinkedList<>();
+
+        for (int i = 1; i <= prosessesMap.size(); i++) {
+            processesQ.add(prosessesMap.get(i));
+        }
+
+        Process process = processesQ.poll();
+
+        while (process != null) {
+            System.out.print("Процесс " + process.getProcessID() + " начинает работать" + '\n');
+            String result = startProcess(process);
+            System.out.print(result);
+            if (result.contains("вышло")) {
+                processesQ.add(process);
+            }
+            process = processesQ.poll();
         }
     }
 
@@ -32,9 +64,9 @@ public class Core {
                 if (stream.getTime() > process.getMaxTime() - totalTime) {
                     stream.changeTime(process.getMaxTime() - totalTime);
                 }
-                totalTime += stream.getWorkTime();
+                totalTime += stream.getRealWorkTime();
                 System.out.print("Поток " + stream.getStreamID() + " начинает выполнение\n");
-                String result = stream.startStream();
+                String result = stream.work();
                 System.out.print(result);
                 if (result.contains("вышло")) {
                     streamsQ.add(stream);
@@ -53,16 +85,4 @@ public class Core {
         }
     }
 
-    public void planning() {
-        Process process = processesQ.poll();
-        while (process != null) {
-            System.out.print("Процесс " + process.getProcessID() + " начинает работать" + '\n');
-            String result = startProcess(process);
-            System.out.print(result);
-            if (result.contains("вышло")) {
-                processesQ.add(process);
-            }
-            process = processesQ.poll();
-        }
-    }
 }

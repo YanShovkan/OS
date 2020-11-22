@@ -11,12 +11,16 @@ public class Stream {
         this.streamID = streamID;
     }
 
-    public String startStream() {
+    public String work() {
         if (workTime > time) {
             workTime = workTime - time;
             return ("Время потока  " + streamID + " вышло, прошло " + time + " такт(ов)\n");
         }
         return ("Поток " + streamID + " выполнен за " + workTime + " такт(ов)\n");
+    }
+
+    public int getStreamID() {
+        return streamID;
     }
 
     public int getTime() {
@@ -31,14 +35,14 @@ public class Stream {
         this.time = 2;
     }
 
-    public int getStreamID() {
-        return streamID;
-    }
-
-    public int getWorkTime() {
+    public int getRealWorkTime() {
         if (workTime > time) {
             return time;
         }
+        return workTime;
+    }
+
+    public int getWorkTime(){
         return workTime;
     }
 }
