@@ -1,18 +1,20 @@
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Random;
+import java.util.*;
 
 public class Core {
     Random random = new Random();
 
     private HashMap<Integer, Process> prosessesMap;
+    private LinkedList<Integer> lotteryTicket = new LinkedList<Integer>();
+
 
     public void createProcesses() {
-        int processQuantity = random.nextInt(10) + 1;
+        int processQuantity = 5;
         prosessesMap = new HashMap<Integer, Process>();
 
         for (int i = 1; i <= processQuantity; i++) {
+            for (int count = 0; count < random.nextInt(10) + 1; count++) {
+                lotteryTicket.add(i);
+            }
             Process process = new Process(i);
             int streamQuantity = random.nextInt(10) + 1;
             Stream stream;
@@ -24,6 +26,7 @@ public class Core {
             process.setStreamsQ(streamsQ);
             prosessesMap.put(i, process);
         }
+
     }
 
     public void printAllProcesses() {
@@ -36,22 +39,24 @@ public class Core {
     }
 
     public void planning() {
-        Queue<Process> processesQ = new LinkedList<>();
+        while (!prosessesMap.isEmpty()) {
+            int index = random.nextInt(lotteryTicket.size());
+            int loteryResult = lotteryTicket.get(index);
 
-        for (int i = 1; i <= prosessesMap.size(); i++) {
-            processesQ.add(prosessesMap.get(i));
-        }
-
-        Process process = processesQ.poll();
-
-        while (process != null) {
-            System.out.print("Процесс " + process.getProcessID() + " начинает работать" + '\n');
-            String result = startProcess(process);
-            System.out.print(result);
-            if (result.contains("вышло")) {
-                processesQ.add(process);
+            if(prosessesMap.containsKey(loteryResult)) {
+                Process process = prosessesMap.get(loteryResult);
+                System.out.println("Процесс " + loteryResult + " начинает выполнение");
+                String result = startProcess(process);
+                System.out.println(result);
+                if (!result.contains("вышло")) {
+                    prosessesMap.remove(loteryResult);
+                    for(int i = 0;i<lotteryTicket.size();i++){
+                        if(lotteryTicket.get(i)==loteryResult){
+                            lotteryTicket.remove(i);
+                        }
+                    }
+                }
             }
-            process = processesQ.poll();
         }
     }
 
