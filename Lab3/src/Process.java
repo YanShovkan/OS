@@ -4,6 +4,15 @@ public class Process {
     //экземпляр процесса
     Random random = new Random();
 
+    private PageTabel pageTabel;
+
+    public void addTabel(PageTabel pageTabel) {
+        this.pageTabel = pageTabel;
+    }
+
+    public PageTabel getTable(){
+        return pageTabel;
+    }
     private List<Page> pages = new LinkedList<Page>();
     private int ID;
     private int faultFrequency;

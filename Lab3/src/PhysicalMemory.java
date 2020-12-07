@@ -3,18 +3,13 @@ import java.util.List;
 
 public class PhysicalMemory {
     //тут хранятся таблицы
-    private List<PageTabel> tabels = new LinkedList<PageTabel>();
     private List<Page> physicalTabel = new LinkedList<Page>();
+    private LinkedList<Process> processes = new LinkedList<Process>();
     private int maxSize = 10;
 
-    public void addTabel(PageTabel pageTabel) {
-        tabels.add(pageTabel);
+    public PhysicalMemory(LinkedList<Process> processes){
+        this.processes = processes;
     }
-
-    public PageTabel getTabel(int index) {
-        return tabels.get(index);
-    }
-
     public void fillIDList() {
         for (int i = 0; i < maxSize; i++) {
             physicalTabel.add(i, null);
@@ -22,7 +17,6 @@ public class PhysicalMemory {
     }
 
     public void setInTabel(Page page) {
-
         if (physicalTabel.contains(page)) {
             System.out.print("Изменений в таблице физической памяти нет\n\n");
             return;
@@ -30,15 +24,15 @@ public class PhysicalMemory {
         for (int i = 0; i < maxSize; i++) {
             if (physicalTabel.get(i) == null) {
                 physicalTabel.add(i, page);
-                tabels.get(page.getProcessID()).setInPhysical(page.getID(), i);
+                processes.get(page.getProcessID()).getTable().setInPhysical(page.getID(), i);
                 System.out.println("Изменение таблицы страниц");
-                getTabel(page.getProcessID()).printTabel();
+                processes.get(page.getProcessID()).getTable().printTabel();
                 System.out.println("Изменение таблицы физической памяти");
                 printTabel();
                 return;
             }
         }
-        pageFaultFrequency(page);
+       pageFaultFrequency(page);
     }
 
     //Алгоритм Page Fault Frequency
@@ -53,12 +47,12 @@ public class PhysicalMemory {
 
             }
         }
-        tabels.get(physicalTabel.get(pageID).getProcessID()).deleteFromPhysical(pageID);
+        processes.get(physicalTabel.get(pageID).getProcessID()).getTable().deleteFromPhysical(pageID);
         physicalTabel.remove(pageID);
         physicalTabel.add(pageID, page);
-        tabels.get(page.getProcessID()).setInPhysical(page.getID(), pageID);
+        processes.get(physicalTabel.get(pageID).getProcessID()).getTable().setInPhysical(page.getID(), pageID);
         System.out.println("Изменение таблицы страниц");
-        getTabel(page.getProcessID()).printTabel();
+        processes.get(page.getProcessID()).getTable().printTabel();
         System.out.println("Изменение таблицы физической памяти");
         printTabel();
     }

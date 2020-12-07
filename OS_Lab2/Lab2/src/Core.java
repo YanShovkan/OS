@@ -8,7 +8,7 @@ public class Core {
 
 
     public void createProcesses() {
-        int processQuantity = 5;
+        int processQuantity = random.nextInt(10) + 1;
         prosessesMap = new HashMap<Integer, Process>();
 
         for (int i = 1; i <= processQuantity; i++) {

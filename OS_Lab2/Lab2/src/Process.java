@@ -5,7 +5,7 @@ public class Process {
     private Queue<Stream> streamsQ = new LinkedList<>();
 
     private int processID;
-    private int maxTime = 20;
+    private int maxTime = 10;
 
     Process(int processID) {
         this.processID = processID;
