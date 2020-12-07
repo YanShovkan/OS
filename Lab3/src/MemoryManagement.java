@@ -14,8 +14,6 @@ public class MemoryManagement {
         for (int i = 0; i < quantityProcess; i++) {
             Process newProcess = new Process(i);
             myDisk.addProcess(newProcess);
-            PageTabel pageTabel = new PageTabel(newProcess);
-            newProcess.addTabel(pageTabel);
             processes.add(newProcess);
         }
     }

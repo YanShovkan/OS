@@ -6,13 +6,14 @@ public class Process {
 
     private PageTabel pageTabel;
 
-    public void addTabel(PageTabel pageTabel) {
+    public void addTabel() {
         this.pageTabel = pageTabel;
     }
 
-    public PageTabel getTable(){
+    public PageTabel getTable() {
         return pageTabel;
     }
+
     private List<Page> pages = new LinkedList<Page>();
     private int ID;
     private int faultFrequency;
@@ -21,6 +22,7 @@ public class Process {
     Process(int ID) {
         this.ID = ID;
         createPages();
+        pageTabel = new PageTabel(this);
     }
 
     private void createPages() {
