@@ -6,10 +6,6 @@ public class Process {
 
     private PageTabel pageTabel;
 
-    public void addTabel() {
-        this.pageTabel = pageTabel;
-    }
-
     public PageTabel getTable() {
         return pageTabel;
     }
